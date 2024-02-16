@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SongSeeker</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="qr-reader" style="width:500px"></div>
+    <div id="qr-reader-results"></div>
+    <div>Playback Duration (seconds): <input type="number" id="playback-duration" value="30"></div>
+    <button id="set-duration">Set Duration</button>
+    
+
+    <div id="player"></div>
+    <div>Video Title: <span id="video-title"></span></div>
+    <div>Video Duration: <span id="video-duration"></span></div>
+    <button id="play-video">Play</button>
+    <button id="play-video-random-start">Play Random</button>
+    <button id="stop-video">Stop</button>
+    <br>
+    <br>
+    <button id="startScanButton" class="button">Start Scan</button>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
+    <script src="app.js"></script>
+
+</body>
+</html>
