@@ -1,0 +1,56 @@
+name: Generate and upload SongSeeker image  
+
+on:
+  push:
+    branches: [ "main", "release/*", "develop", "develop/*" ]
+  pull_request:
+    branches: [ "main", "release/*", "develop", "develop/*" ]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  get_environment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Define the used environment
+        id: env_check
+        run: |
+          ENV_NAME=staging
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            ENV_NAME=production
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            ENV_NAME=staging
+          else
+            ENV_NAME=staging
+          fi
+
+          echo "Chosen environment: ${ENV_NAME}"
+
+          echo "env_name=${ENV_NAME}" >> $GITHUB_OUTPUT
+                  
+    outputs:
+      env_name: ${{ steps.env_check.outputs.env_name }}
+
+  generate-songseeker-image:
+    needs: [get_environment]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ needs.get_environment.outputs.env_name }}
+
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Docker build preparation image
+        run: |
+          docker buildx create --name container --driver=docker-container
+          docker buildx build --platform linux/amd64,linux/arm64 -f imagebuild/Dockerfile -t ${{ vars.DOCKER_IMAGE }} --builder container --push .
+          docker buildx rm container
