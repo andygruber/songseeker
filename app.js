@@ -23,15 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
         highlightCodeOutline: true,
     }
     );
-
-    qrScanner.start().catch(err => {
-        console.error('Unable to start QR Scanner', err);
-        qrResult.textContent = "QR Scanner failed to start.";
-    });
-
-    qrScanner.start().then(() => {
-        qrScanner.setInversionMode('both'); // we want to scan also for Hitster QR codes which use inverted colors
-    });
     
     // Function to determine the type of link and act accordingly
     async function handleScannedLink(decodedText) {
@@ -64,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (youtubeLinkData) {
             qrScanner.stop(); // Stop scanning after a result is found
             document.getElementById('qr-reader').style.display = 'none'; // Hide the scanner after successful scan
+            document.getElementById('cancelScanButton').style.display = 'none'; // Hide the cancel-button
             document.getElementById('startScanButton').style.display = 'block'; // Show the scan-button
             lastDecodedText = ""; // Reset the last decoded text
 
@@ -252,11 +244,26 @@ function playVideoAtRandomStartTime() {
 }
 
 // Assuming you have an element with the ID 'qr-reader' for the QR scanner
-document.getElementById('startScanButton').style.display = 'none'; // Initially hide the scan-button
+document.getElementById('qr-reader').style.display = 'none'; // Initially hide the QR Scanner
+document.getElementById('cancelScanButton').style.display = 'none'; // Initially hide the QR Scanner
 
 document.getElementById('startScanButton').addEventListener('click', function() {
     document.getElementById('qr-reader').style.display = 'block'; // Show the scanner
-    qrScanner.start(); // Stop scanning after a result is found
+    qrScanner.start().catch(err => {
+        console.error('Unable to start QR Scanner', err);
+        qrResult.textContent = "QR Scanner failed to start.";
+    });
 
-    // Initialize QR scanner here or make it start scanning
+    qrScanner.start().then(() => {
+        qrScanner.setInversionMode('both'); // we want to scan also for Hitster QR codes which use inverted colors
+    });
+
+});
+
+document.getElementById('cancelScanButton').addEventListener('click', function() {
+    qrScanner.stop(); // Stop scanning after a result is found
+    document.getElementById('qr-reader').style.display = 'none'; // Hide the scanner after successful scan
+    document.getElementById('cancelScanButton').style.display = 'none'; // Hide the cancel-button
+    document.getElementById('startScanButton').style.display = 'block'; // Show the scan-button
+
 });
