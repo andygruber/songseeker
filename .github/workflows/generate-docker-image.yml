@@ -52,6 +52,4 @@ jobs:
       - name: Docker build preparation image
         working-directory: ./build-docker
         run: |
-          docker buildx create --name container --driver=docker-container
-          docker buildx build --platform linux/amd64,linux/arm64 -f imagebuild/Dockerfile -t ${{ vars.DOCKER_IMAGE }} --builder container --push .
-          docker buildx rm container
+          docker buildx build --platform linux/amd64,linux/arm64 -f imagebuild/Dockerfile -t ${{ vars.DOCKER_IMAGE }} --push .
