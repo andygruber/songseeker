@@ -1,27 +1,38 @@
+import QrScanner from "https://unpkg.com/qr-scanner/qr-scanner.min.js";
+
+let player; // Define player globally
+let playbackTimer; // hold the timer reference
+let playbackDuration = 30; // Default playback duration
+let qrScanner;
+
 document.addEventListener('DOMContentLoaded', function () {
+
     let lastDecodedText = ""; // Store the last decoded text
 
-    const qrReader = new Html5Qrcode("qr-reader");
+    const video = document.getElementById('qr-video');
     const resultContainer = document.getElementById("qr-reader-results");
 
-    qrReader.start(
-        { facingMode: "environment" },
-        {
-            fps: 10
-        },
-        (decodedText) => {
-            if (decodedText !== lastDecodedText) {
-                lastDecodedText = decodedText; // Update the last decoded text
-                handleScannedLink(decodedText);
-            }
-        },
-        (errorMessage) => {
-            // handle scan error
+    qrScanner = new QrScanner(video, result => {
+        console.log('decoded qr code:', result);
+        if (result.data !== lastDecodedText) {
+            lastDecodedText = result.data; // Update the last decoded text
+            handleScannedLink(result.data);
         }
-    ).catch((err) => {
-        // handle initialization error
+    }, { 
+        highlightScanRegion: true,
+        highlightCodeOutline: true,
+    }
+    );
+
+    qrScanner.start().catch(err => {
+        console.error('Unable to start QR Scanner', err);
+        qrResult.textContent = "QR Scanner failed to start.";
     });
 
+    qrScanner.start().then(() => {
+        qrScanner.setInversionMode('both'); // we want to scan also for Hitster QR codes which use inverted colors
+    });
+    
     // Function to determine the type of link and act accordingly
     async function handleScannedLink(decodedText) {
         let youtubeURL = "";
@@ -51,6 +62,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const youtubeLinkData = parseYoutubeLink(youtubeURL);
         if (youtubeLinkData) {
+            qrScanner.stop(); // Stop scanning after a result is found
+            document.getElementById('qr-reader').style.display = 'none'; // Hide the scanner after successful scan
+            document.getElementById('startScanButton').style.display = 'block'; // Show the scan-button
+            lastDecodedText = ""; // Reset the last decoded text
+
             resultContainer.innerHTML = `
                 <p>Video ID: ${youtubeLinkData.videoId}</p>
                 <p>Start Time: ${youtubeLinkData.startTime || 'N/A'}</p>
@@ -62,19 +78,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-    // Example implementation for isHitsterLink
     function isHitsterLink(url) {
-        return url.startsWith("http://www.hitstergame.com/");
+        // Regular expression to match with or without "http://" or "https://"
+        const regex = /^(?:http:\/\/|https:\/\/)?www\.hitstergame\.com\/.+/;
+        return regex.test(url);
     }
 
     // Example implementation for isYoutubeLink
     function isYoutubeLink(url) {
         return url.startsWith("https://www.youtube.com") || url.startsWith("https://youtu.be");
     }
-    
+
     // Example implementation for parseHitsterUrl
     function parseHitsterUrl(url) {
-        const regex = /^http:\/\/www\.hitstergame\.com\/(\w+)\/(\d+)$/;
+        const regex = /^(?:http:\/\/|https:\/\/)?www\.hitstergame\.com\/(\w+)\/(\d+)$/;
         const match = url.match(regex);
         if (match) {
             return { lang: match[1], id: match[2] };
@@ -136,8 +153,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
 });
 
-var player; // Define player globally
-
 // This function creates an <iframe> (and YouTube player) after the API code downloads.
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
@@ -149,6 +164,13 @@ function onYouTubeIframeAPIReady() {
         }
     });
 }
+window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+// Load the YouTube IFrame API script
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+const firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 // The API will call this function when the video player is ready.
 function onPlayerReady(event) {
@@ -159,7 +181,6 @@ function onPlayerReady(event) {
 // Display video information when it's cued
 function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.CUED) {
-        document.getElementById('qr-reader').style.display = 'none'; // Hide the scanner after successful scan
         // Display title and duration
         var videoData = player.getVideoData();
         document.getElementById('video-title').textContent = videoData.title;
@@ -184,8 +205,6 @@ document.getElementById('stop-video').addEventListener('click', function() {
     player.stopVideo();
 });
 
-var playbackDuration = 30; // Default playback duration
-
 document.getElementById('set-duration').addEventListener('click', function() {
     var durationInput = document.getElementById('playback-duration').value;
     playbackDuration = parseInt(durationInput, 10) || 30; // Use default if input is invalid
@@ -195,11 +214,9 @@ document.getElementById('play-video-random-start').addEventListener('click', fun
     playVideoAtRandomStartTime();
 });
 
-var playbackTimer; // hold the timer reference
-
 function playVideoAtRandomStartTime() {
-    const minStartPercentage = 0.15;
-    const maxEndPercentage = 0.85;
+    const minStartPercentage = 0.10;
+    const maxEndPercentage = 0.90;
     let videoDuration = player.getDuration()
     let startTime = player.getCurrentTime(); // If the video is already cued to a specific start time
     let endTime = startTime + playbackDuration; // Default end time based on playback duration
@@ -208,7 +225,7 @@ function playVideoAtRandomStartTime() {
     const minStartTime = Math.max(startTime, videoDuration * minStartPercentage);
     const maxEndTime = videoDuration * maxEndPercentage;
 
-    // Ensure the video ends by 85% of its total duration
+    // Ensure the video ends by 90% of its total duration
     if (endTime > maxEndTime) {
         endTime = maxEndTime;
         startTime = Math.max(minStartTime, endTime - playbackDuration);
@@ -235,9 +252,11 @@ function playVideoAtRandomStartTime() {
 }
 
 // Assuming you have an element with the ID 'qr-reader' for the QR scanner
-//document.getElementById('qr-reader').style.display = 'none'; // Initially hide the scanner
+document.getElementById('startScanButton').style.display = 'none'; // Initially hide the scan-button
 
 document.getElementById('startScanButton').addEventListener('click', function() {
     document.getElementById('qr-reader').style.display = 'block'; // Show the scanner
+    qrScanner.start(); // Stop scanning after a result is found
+
     // Initialize QR scanner here or make it start scanning
 });
