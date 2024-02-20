@@ -49,14 +49,6 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Docker build setup
-        working-directory: ./build-docker
-        run: |
-          docker network create winccoarepo
-          docker compose up -d
-          # wait until repo data is generated
-          docker compose wait create-repo
-
       - name: Docker build preparation image
         working-directory: ./build-docker
         run: |
