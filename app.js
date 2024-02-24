@@ -4,6 +4,7 @@ let player; // Define player globally
 let playbackTimer; // hold the timer reference
 let playbackDuration = 30; // Default playback duration
 let qrScanner;
+let csvCache = {};
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -34,8 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("Hitster data:", hitsterData.id, hitsterData.lang);
             if (hitsterData) {
                 try {
-                    const response = await fetch(`/hitster-${hitsterData.lang}.csv`);
-                    const csvContent = await response.text();
+                    const csvContent = await getCachedCsv(`/hitster-${hitsterData.lang}.csv`);
                     const youtubeLink = lookupYoutubeLink(hitsterData.id, csvContent);
                     if (youtubeLink) {
                         // Handle YouTube link obtained from the CSV
@@ -94,17 +94,47 @@ document.addEventListener('DOMContentLoaded', function () {
     // Looks up the YouTube link in the CSV content based on the ID
     function lookupYoutubeLink(id, csvContent) {
         const targetId = parseInt(id, 10); // Convert the incoming ID to an integer
-        const lines = csvContent.split('\n');
-        for (let line of lines) {
-            // Split the line into columns and parse the first column (ID) as an integer
-            const columns = line.split(',');
-            const csvId = parseInt(columns[0], 10);
+        const lines = csvContent; // Assuming the CSV content is already array of lines
+    
+        for (let row of lines) {
+            const csvId = parseInt(row[0], 10);
             if (csvId === targetId) {
                 // Assuming the YouTube URL is in the fourth column
-                return columns[3].trim(); // Return the YouTube link
+                return row[3].trim(); // Return the YouTube link
             }
         }
         return null; // If no matching ID is found
+
+    }
+
+    // Could also use external library, but for simplicity, we'll define it here
+    function parseCSV(text) {
+        const lines = text.split('\n');
+        return lines.map(line => {
+            const result = [];
+            let startValueIdx = 0;
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] === '"' && line[i-1] !== '\\') {
+                    inQuotes = !inQuotes;
+                } else if (line[i] === ',' && !inQuotes) {
+                    result.push(line.substring(startValueIdx, i).trim().replace(/^"(.*)"$/, '$1'));
+                    startValueIdx = i + 1;
+                }
+            }
+            result.push(line.substring(startValueIdx).trim().replace(/^"(.*)"$/, '$1')); // Push the last value
+            return result;
+        });
+    }
+
+    async function getCachedCsv(url) {
+        if (!csvCache[url]) { // Check if the URL is not in the cache
+            console.log(`URL not cached, fetching CSV from URL: ${url}`);
+            const response = await fetch(url);
+            const data = await response.text();
+            csvCache[url] = parseCSV(data); // Cache the parsed CSV data using the URL as a key
+        }
+        return csvCache[url]; // Return the cached data for the URL
     }
 
     function parseYoutubeLink(url) {
