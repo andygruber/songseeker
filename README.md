@@ -10,3 +10,13 @@ Inspired from https://hitstergame.com/de-de/ and https://rockster.brettspiel.dig
 Youtube links from the original Hitster cards get be downloaded from https://github.com/andygruber/songseeker-hitster-playlists
 
 qr-scanner from https://github.com/nimiq/qr-scanner
+
+### Generating QR-Code Gamecards
+
+https://github.com/andygruber/songseeker-card-generator
+
+### Docker image build
+
+```
+docker build -t songseeker -f .\imagebuild\Dockerfile .
+```
