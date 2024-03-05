@@ -236,6 +236,11 @@ document.getElementById('play-video-random-start').addEventListener('click', fun
     playVideoAtRandomStartTime();
 });
 
+document.getElementById('hideInfo').addEventListener('click', function() {
+    document.getElementById('videotitle').style.display = 'none'; // Hide
+    document.getElementById('hideInfo').style.display = 'none'; // Hide
+});
+
 function playVideoAtRandomStartTime() {
     const minStartPercentage = 0.10;
     const maxEndPercentage = 0.90;
