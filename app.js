@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Example implementation for isYoutubeLink
     function isYoutubeLink(url) {
-        return url.startsWith("https://www.youtube.com") || url.startsWith("https://youtu.be");
+        return url.startsWith("https://www.youtube.com") || url.startsWith("https://youtu.be") || url.startsWith("https://music.youtube.com/");
     }
 
     // Example implementation for parseHitsterUrl
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // First, ensure that the URL is decoded (handles encoded URLs)
         url = decodeURIComponent(url);
     
-        const regex = /^https?:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/)([^&?\/\s]+)((\?.*)?)$/;
+        const regex = /^https?:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|music\.youtube\.com\/watch\?v=)(.{11}).*/;
         const match = url.match(regex);
         if (match) {
             const queryParams = new URLSearchParams(match[4]); // Correctly capture and parse the query string part of the URL
