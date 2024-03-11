@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
             youtubeURL = decodedText;
         } else if (isHitsterLink(decodedText)) {
             const hitsterData = parseHitsterUrl(decodedText);
-            console.log("Hitster data:", hitsterData.id, hitsterData.lang);
             if (hitsterData) {
+                console.log("Hitster data:", hitsterData.id, hitsterData.lang);
                 try {
                     const csvContent = await getCachedCsv(`/hitster-${hitsterData.lang}.csv`);
                     const youtubeLink = lookupYoutubeLink(hitsterData.id, csvContent);
@@ -46,6 +46,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 } catch (error) {
                   console.error("Failed to fetch CSV:", error);
                 }
+            }
+            else {
+                console.log("Invalid Hitster URL:", decodedText);
             }
         }
 
@@ -80,10 +83,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Example implementation for parseHitsterUrl
     function parseHitsterUrl(url) {
-        const regex = /^(?:http:\/\/|https:\/\/)?www\.hitstergame\.com\/(\w+)\/(\d+)$/;
+        const regex = /^(?:http:\/\/|https:\/\/)?www\.hitstergame\.com\/(.+?)\/(\d+)$/;
         const match = url.match(regex);
         if (match) {
-            return { lang: match[1], id: match[2] };
+            // Hitster URL is in the format: https://www.hitstergame.com/{lang}/{id}
+            // lang can be things like "en", "de", "pt", etc., but also "de/aaaa0007"
+            const processedLang = match[1].replace(/\//g, "-");
+            return { lang: processedLang, id: match[2] };
         }
         return null;
     }
