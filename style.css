@@ -50,8 +50,66 @@ body {
     transition: background 0.3s ease;
 }
 
+.button_startscan {
+    width: 200px;
+    height: 80px;
+    display: inline-block;
+    background: #0056b3;
+    color: #ffffff;
+    padding: 10px 5px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.button_startstop {
+    width: 100px;
+    height: 50px;
+    display: inline-block;
+    background: #0056b3;
+    color: #ffffff;
+    padding: 10px 5px;
+    margin: 10px 0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.cancelScanButton {
+    z-index: 20;
+}
+
 .button:hover {
     background: #004494;
+}
+
+.text-block {
+    position: relative;
+    margin-top: 12px;
+    padding: 1rem;
+    text-align: center;
+    border: 1px solid #333;
+  }
+
+.text-block .heading {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX( -50% );
+    padding: 0 0.5rem;
+    font-size: 20px;
+    line-height: 1;
+    background-color: #f4f4f4;
+}
+
+.settings_div {
+    width: 100%;
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0;
+    padding: 0 0.5rem;
+    display: none;
 }
 
 @media screen and (max-width: 768px) {
@@ -65,10 +123,40 @@ body {
 }
 
 #qr-reader {
-    position: fixed; /* or absolute */
+    position: absolute; /* or absolute */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 10; /* Ensure it's above other content */
+    z-index: 1; /* Ensure it's above other content */
+    background-color: #f4f4f4;
+}
+
+#qr-video {
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+#videotitle {
+    display:  none;
+}
+
+#videoduration {
+    display:  none;
+}
+
+#videoid {
+    display: none ;
+}
+
+#cancelScanButton {
+    position: absolute;
+    display:none;
+    background-color: #e95d5d;
+    color: black;
+    z-index: 4;
 }

@@ -56,18 +56,15 @@ document.addEventListener('DOMContentLoaded', function () {
             qrScanner.stop(); // Stop scanning after a result is found
             document.getElementById('qr-reader').style.display = 'none'; // Hide the scanner after successful scan
             document.getElementById('cancelScanButton').style.display = 'none'; // Hide the cancel-button
-            document.getElementById('startScanButton').style.display = 'block'; // Show the scan-button
             lastDecodedText = ""; // Reset the last decoded text
 
-            resultContainer.innerHTML = `
-                <p>Video ID: ${youtubeLinkData.videoId}</p>
-                <p>Start Time: ${youtubeLinkData.startTime || 'N/A'}</p>
-                <p>End Time: ${youtubeLinkData.endTime || 'N/A'}</p>
-            `;
-            console.log(youtubeLinkData.videoId)
-            player.cueVideoById(youtubeLinkData.videoId, youtubeLinkData.startTime || 0);   
-        }
+            document.getElementById('video-id').textContent = youtubeLinkData.videoId;  
 
+            console.log(youtubeLinkData.videoId);
+            player.cueVideoById(youtubeLinkData.videoId, youtubeLinkData.startTime || 0);   
+            
+        }
+        
     }
 
     function isHitsterLink(url) {
@@ -172,7 +169,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
         return isNaN(seconds) ? null : seconds;
     }
-    
 });
 
 // This function creates an <iframe> (and YouTube player) after the API code downloads.
@@ -208,6 +204,16 @@ function onPlayerStateChange(event) {
         document.getElementById('video-title').textContent = videoData.title;
         var duration = player.getDuration();
         document.getElementById('video-duration').textContent = formatDuration(duration);
+        // Check for Autoplay
+        if (document.getElementById('autoplay').checked == true) {
+            document.getElementById('startstop-video').innerHTML = "Stop";
+            if (document.getElementById('randomplayback').checked == true) {
+                playVideoAtRandomStartTime();
+            }
+            else {
+            player.playVideo();
+            }
+        }
     }
 }
 
@@ -219,26 +225,20 @@ function formatDuration(duration) {
 }
 
 // Add event listeners to Play and Stop buttons
-document.getElementById('play-video').addEventListener('click', function() {
-    player.playVideo();
-});
-
-document.getElementById('stop-video').addEventListener('click', function() {
-    player.stopVideo();
-});
-
-document.getElementById('set-duration').addEventListener('click', function() {
-    var durationInput = document.getElementById('playback-duration').value;
-    playbackDuration = parseInt(durationInput, 10) || 30; // Use default if input is invalid
-});
-
-document.getElementById('play-video-random-start').addEventListener('click', function() {
-    playVideoAtRandomStartTime();
-});
-
-document.getElementById('hideInfo').addEventListener('click', function() {
-    document.getElementById('videotitle').style.display = 'none'; // Hide
-    document.getElementById('hideInfo').style.display = 'none'; // Hide
+document.getElementById('startstop-video').addEventListener('click', function() {
+    if (this.innerHTML == "Play") {
+        this.innerHTML = "Stop";
+        if (document.getElementById('randomplayback').checked == true) {
+            playVideoAtRandomStartTime();
+        }
+        else {
+            player.playVideo();
+        }
+    }
+    else {
+        this.innerHTML = "Play";
+        player.pauseVideo();
+    }
 });
 
 function playVideoAtRandomStartTime() {
@@ -246,7 +246,8 @@ function playVideoAtRandomStartTime() {
     const maxEndPercentage = 0.90;
     let videoDuration = player.getDuration()
     let startTime = player.getCurrentTime(); // If the video is already cued to a specific start time
-    let endTime = startTime + playbackDuration; // Default end time based on playback duration
+    playbackDuration = parseInt(document.getElementById('playback-duration').value, 10) || 30;
+    let endTime = startTime + playbackDuration;
 
     // Adjust start and end time based on video duration
     const minStartTime = Math.max(startTime, videoDuration * minStartPercentage);
@@ -275,14 +276,15 @@ function playVideoAtRandomStartTime() {
     // Schedule video stop after the specified duration
     playbackTimer = setTimeout(() => {
         player.pauseVideo();
+        document.getElementById('startstop-video').innerHTML = "Play";
     }, (endTime - startTime) * 1000); // Convert to milliseconds
 }
 
 // Assuming you have an element with the ID 'qr-reader' for the QR scanner
 document.getElementById('qr-reader').style.display = 'none'; // Initially hide the QR Scanner
-document.getElementById('cancelScanButton').style.display = 'none'; // Initially hide the QR Scanner
 
 document.getElementById('startScanButton').addEventListener('click', function() {
+    document.getElementById('cancelScanButton').style.display = 'block';
     document.getElementById('qr-reader').style.display = 'block'; // Show the scanner
     qrScanner.start().catch(err => {
         console.error('Unable to start QR Scanner', err);
@@ -292,13 +294,36 @@ document.getElementById('startScanButton').addEventListener('click', function() 
     qrScanner.start().then(() => {
         qrScanner.setInversionMode('both'); // we want to scan also for Hitster QR codes which use inverted colors
     });
+});
 
+document.getElementById('songinfo').addEventListener('click', function() {
+    var cb = document.getElementById('songinfo');
+    var videoid = document.getElementById('videoid');
+    var videotitle = document.getElementById('videotitle');
+    var videoduration = document.getElementById('videoduration');
+    if(cb.checked == true){
+        videoid.style.display = 'block';
+        videotitle.style.display = 'block';
+        videoduration.style.display = 'block';
+    } else {
+        videoid.style.display = 'none';
+        videotitle.style.display = 'none';
+        videoduration.style.display = 'none';
+    }
 });
 
 document.getElementById('cancelScanButton').addEventListener('click', function() {
     qrScanner.stop(); // Stop scanning after a result is found
     document.getElementById('qr-reader').style.display = 'none'; // Hide the scanner after successful scan
     document.getElementById('cancelScanButton').style.display = 'none'; // Hide the cancel-button
-    document.getElementById('startScanButton').style.display = 'block'; // Show the scan-button
+});
 
+document.getElementById('cb_settings').addEventListener('click', function() {
+    var cb = document.getElementById('cb_settings');
+    if (cb.checked == true) {
+        document.getElementById('settings_div').style.display = 'block';
+    }
+    else {
+        document.getElementById('settings_div').style.display = 'none';
+    }
 });

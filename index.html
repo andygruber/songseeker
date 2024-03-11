@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>SongSeeker</title>
     <script type="module">
@@ -8,33 +9,64 @@
     <link rel="stylesheet" href="style.css">
     <meta name=viewport content="width=device-width, initial-scale=1">
 </head>
+
 <body>
-    <div><h2>SongSeeker</h2></div>
+    <h2>SongSeeker</h2>
+
     <div id="qr-reader">
+        <button id="cancelScanButton" class="button">Cancel Scan</button>
         <video id="qr-video"></video>
     </div>
-    <div id="qr-reader-results"></div>
-    <div>Playback Duration (seconds): <input type="number" id="playback-duration" value="30"></div>
-    <button id="set-duration">Set Duration</button>
-    
 
-    <div id="player"></div>
+    <button id="startScanButton" class="button_startscan">Start Scan</button>
+    <br />
+    <button id="startstop-video" class="button_startstop">Play</button>
+
+    <div id="videoid">Video ID: <span id="video-id"></span></div>
     <div id="videotitle">Video Title: <span id="video-title"></span></div>
-    <div>Video Duration: <span id="video-duration"></span></div>
-    <button id="play-video" class="button">Play all</button>
-    <button id="play-video-random-start" class="button">Play Random time</button>
-    <button id="stop-video" class="button">Stop</button>
-    <br>
-    <br>
-    <button id="startScanButton" class="button">Start Scan</button>
-    <button id="cancelScanButton" class="button">Cancel Scan</button>
-    <button id="hideInfo" class="button">Hide Song Info</button>
+    <div id="videoduration">Video Duration: <span id="video-duration"></span></div>
+
+    <hr />
 
     <div>
         <a href="https://github.com/andygruber/songseeker/" target="_blank">View the SongSeeker project on GitHub</a>
     </div>
 
+    <input type="checkbox" id="cb_settings" name="cb_settings" />
+    <label for="cb_settings">Show / Hide settings</label>
+    <div class="settings_div" id="settings_div">
+        <div class="text-block">
+            <div class="heading">Autoplay</div>
+            <div>
+                <input type="checkbox" id="autoplay" name="autoplay" checked />
+                <label for="autoplay">Autoplay</label>
+            </div>
+        </div>
+
+        <div class="text-block">
+            <div class="heading">Random Playback</div>
+            <div>
+                <input type="checkbox" id="randomplayback" name="randomplayback" />
+                <label for="randomplayback">Random Playback</label>
+                <br />
+                <label for="playback-duration">Playback Duration (seconds): </label>
+                <input type="number" id="playback-duration" value="30">
+            </div>
+        </div>
+
+        <div class="text-block">
+            <div class="heading">Debug</div>
+            <div>
+                <input type="checkbox" id="songinfo" name="songinfo" />
+                <label for="songinfo">Show song info</label>
+            </div>
+        </div>
+    </div>
+
+    <div id="player"></div> <!-- Load YouTube Player -->
+
     <script type="module" src="app.js"></script>
 
 </body>
+
 </html>
