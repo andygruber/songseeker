@@ -199,6 +199,7 @@ function onPlayerReady(event) {
 // Display video information when it's cued
 function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.CUED) {
+        document.getElementById('startstop-video').style.background = "green";
         // Display title and duration
         var videoData = player.getVideoData();
         document.getElementById('video-title').textContent = videoData.title;
@@ -214,6 +215,15 @@ function onPlayerStateChange(event) {
             player.playVideo();
             }
         }
+    }
+    else if (event.data == YT.PlayerState.PLAYING) {
+        document.getElementById('startstop-video').style.background = "red";
+    }
+    else if (event.data == YT.PlayerState.PAUSED | event.data == YT.PlayerState.ENDED) {
+        document.getElementById('startstop-video').style.background = "green";
+    }
+    else if (event.data == YT.PlayerState.BUFFERING) {
+        document.getElementById('startstop-video').style.background = "orange";
     }
 }
 
@@ -327,3 +337,51 @@ document.getElementById('cb_settings').addEventListener('click', function() {
         document.getElementById('settings_div').style.display = 'none';
     }
 });
+
+document.getElementById('randomplayback').addEventListener('click', function() {
+    document.cookie = "RandomPlaybackChecked=" + this.checked + ";max-age=2592000"; //30 Tage
+    listCookies();
+});
+
+document.getElementById('autoplay').addEventListener('click', function() {
+    document.cookie = "autoplayChecked=" + this.checked + ";max-age=2592000"; //30 Tage
+    listCookies();
+});
+
+document.getElementById('cookies').addEventListener('click', function() {
+    var cb = document.getElementById('cookies');
+    if (cb.checked == true) {
+        document.getElementById('cookielist').style.display = 'block';
+    }
+    else {
+        document.getElementById('cookielist').style.display = 'none';
+    }
+});
+
+function listCookies() {
+    var result = document.cookie;
+    document.getElementById("cookielist").innerHTML=result;
+ }
+
+function getCookieValue(name) {
+    const regex = new RegExp(`(^| )${name}=([^;]+)`);
+    const match = document.cookie.match(regex);
+    if (match) {
+        return match[2];
+    }
+}
+
+function getCookies() {
+    var isTrueSet;
+    if (getCookieValue("RandomPlaybackChecked") != "") {
+        isTrueSet = (getCookieValue("RandomPlaybackChecked") === 'true');
+        document.getElementById('randomplayback').checked = isTrueSet;
+    }
+    if (getCookieValue("autoplayChecked") != "") {
+        isTrueSet = (getCookieValue("autoplayChecked") === 'true');
+        document.getElementById('autoplay').checked = isTrueSet;  
+    }
+    listCookies();
+}
+
+window.addEventListener("DOMContentLoaded", getCookies());

@@ -27,10 +27,12 @@
     <div id="videoduration">Video Duration: <span id="video-duration"></span></div>
 
     <hr />
-
+    <br/>
     <div>
         <a href="https://github.com/andygruber/songseeker/" target="_blank">View the SongSeeker project on GitHub</a>
     </div>
+    <br/>
+    <!-- <p id="list"></p> -->
 
     <input type="checkbox" id="cb_settings" name="cb_settings" />
     <label for="cb_settings">Show / Hide settings</label>
@@ -38,7 +40,7 @@
         <div class="text-block">
             <div class="heading">Autoplay</div>
             <div>
-                <input type="checkbox" id="autoplay" name="autoplay" checked />
+                <input type="checkbox" id="autoplay" name="autoplay" />
                 <label for="autoplay">Autoplay</label>
             </div>
         </div>
@@ -54,11 +56,18 @@
             </div>
         </div>
 
+        
+
         <div class="text-block">
             <div class="heading">Debug</div>
             <div>
                 <input type="checkbox" id="songinfo" name="songinfo" />
                 <label for="songinfo">Show song info</label>
+                <br/>
+                <input type="checkbox" id="cookies" name="cookies" />
+                <label for="cookies">Show cookies</label>
+                <span id="cookielist"></span>
+                
             </div>
         </div>
     </div>

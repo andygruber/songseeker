@@ -160,3 +160,11 @@ body {
     color: black;
     z-index: 4;
 }
+
+#cookielist {
+    display: none;
+}
+
+#playback-duration {
+    width: 50px;
+}
