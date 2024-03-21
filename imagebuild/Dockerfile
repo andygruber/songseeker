@@ -1,7 +1,7 @@
 FROM alpine:latest AS unzipper
 RUN apk add --no-cache wget unzip
 RUN mkdir /tmp/playlists && \
-  wget -O /tmp/hitster-youtube-playlists.zip https://github.com/andygruber/songseeker-hitster-playlists/releases/download/v0.0.99/hitster-youtube-playlists.zip && \
+  wget -O /tmp/hitster-youtube-playlists.zip https://github.com/andygruber/songseeker-hitster-playlists/releases/latest/download/hitster-youtube-playlists.zip && \
   unzip /tmp/hitster-youtube-playlists.zip -d /tmp/playlists/
 
 FROM nginx
