@@ -96,14 +96,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Looks up the YouTube link in the CSV content based on the ID
     function lookupYoutubeLink(id, csvContent) {
+        const headers = csvContent[0]; // Get the headers from the CSV content
+        const cardIndex = headers.indexOf('Card#');
+        const urlIndex = headers.indexOf('URL');
+
         const targetId = parseInt(id, 10); // Convert the incoming ID to an integer
-        const lines = csvContent; // Assuming the CSV content is already array of lines
-    
+        const lines = csvContent.slice(1); // Exclude the first row (headers) from the lines
+
+        if (cardIndex === -1 || urlIndex === -1) {
+            throw new Error('Card# or URL column not found');
+        }
+
         for (let row of lines) {
-            const csvId = parseInt(row[0], 10);
+            const csvId = parseInt(row[cardIndex], 10);
             if (csvId === targetId) {
-                // Assuming the YouTube URL is in the fourth column
-                return row[3].trim(); // Return the YouTube link
+                return row[urlIndex].trim(); // Return the YouTube link
             }
         }
         return null; // If no matching ID is found
