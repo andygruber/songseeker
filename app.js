@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function isHitsterLink(url) {
         // Regular expression to match with or without "http://" or "https://"
-        const regex = /^(?:http:\/\/|https:\/\/)?www\.hitstergame\.com\/.+/;
+        const regex = /^(?:http:\/\/|https:\/\/)?(www\.hitstergame|app\.hitsternordics)\.com\/.+/;
         return regex.test(url);
     }
 
@@ -90,6 +90,12 @@ document.addEventListener('DOMContentLoaded', function () {
             // lang can be things like "en", "de", "pt", etc., but also "de/aaaa0007"
             const processedLang = match[1].replace(/\//g, "-");
             return { lang: processedLang, id: match[2] };
+        }
+        const regex_nordics = /^(?:http:\/\/|https:\/\/)?app.hitster(nordics).com\/resources\/songs\/(\d+)$/;
+        const match_nordics = url.match(regex_nordics);
+        if (match_nordics) {
+            // Hitster URL can also be in the format: https://app.hitsternordics.com/resources/songs/{id}
+            return { lang: match_nordics[1], id: match_nordics[2] };
         }
         return null;
     }
