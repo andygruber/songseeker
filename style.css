@@ -148,6 +148,9 @@ body {
 #videoduration {
     display:  none;
 }
+#videostart {
+    display:  none;
+}
 
 #videoid {
     display: none ;

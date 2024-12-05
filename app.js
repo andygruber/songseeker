@@ -157,14 +157,15 @@ document.addEventListener('DOMContentLoaded', function () {
         // First, ensure that the URL is decoded (handles encoded URLs)
         url = decodeURIComponent(url);
     
-        const regex = /^https?:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|music\.youtube\.com\/watch\?v=)(.{11}).*/;
+        const regex = /^https?:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|music\.youtube\.com\/watch\?v=)(.{11})(.*)/;
         const match = url.match(regex);
         if (match) {
-            const queryParams = new URLSearchParams(match[4]); // Correctly capture and parse the query string part of the URL
+            const queryParams = new URLSearchParams(match[3]); // Correctly capture and parse the query string part of the URL
             const videoId = match[2];
             let startTime = queryParams.get('start') || queryParams.get('t');
             const endTime = queryParams.get('end');
     
+			 document.getElementById('video-start').textContent = startTime;
             // Normalize and parse 't' and 'start' parameters
             startTime = normalizeTimeParameter(startTime);
             const parsedEndTime = normalizeTimeParameter(endTime);
@@ -224,7 +225,7 @@ function onPlayerStateChange(event) {
         document.getElementById('video-title').textContent = videoData.title;
         var duration = player.getDuration();
         document.getElementById('video-duration').textContent = formatDuration(duration);
-        // Check for Autoplay
+ // Check for Autoplay
         if (document.getElementById('autoplay').checked == true) {
             document.getElementById('startstop-video').innerHTML = "Stop";
             if (document.getElementById('randomplayback').checked == true) {
@@ -274,7 +275,6 @@ function playVideoAtRandomStartTime() {
     const minStartPercentage = 0.10;
     const maxEndPercentage = 0.90;
     let videoDuration = player.getDuration()
-    let startTime = player.getCurrentTime(); // If the video is already cued to a specific start time
     playbackDuration = parseInt(document.getElementById('playback-duration').value, 10) || 30;
     let endTime = startTime + playbackDuration;
 
@@ -330,14 +330,17 @@ document.getElementById('songinfo').addEventListener('click', function() {
     var videoid = document.getElementById('videoid');
     var videotitle = document.getElementById('videotitle');
     var videoduration = document.getElementById('videoduration');
+	var videostart = document.getElementById('videostart');
     if(cb.checked == true){
         videoid.style.display = 'block';
         videotitle.style.display = 'block';
         videoduration.style.display = 'block';
+        videostart.style.display = 'block';
     } else {
         videoid.style.display = 'none';
         videotitle.style.display = 'none';
         videoduration.style.display = 'none';
+        videostart.style.display = 'none';
     }
 });
 
