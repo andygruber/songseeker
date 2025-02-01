@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let startTime = queryParams.get('start') || queryParams.get('t');
             const endTime = queryParams.get('end');
     
-			 document.getElementById('video-start').textContent = startTime;
+            document.getElementById('video-start').textContent = startTime;
             // Normalize and parse 't' and 'start' parameters
             startTime = normalizeTimeParameter(startTime);
             const parsedEndTime = normalizeTimeParameter(endTime);
@@ -225,7 +225,7 @@ function onPlayerStateChange(event) {
         document.getElementById('video-title').textContent = videoData.title;
         var duration = player.getDuration();
         document.getElementById('video-duration').textContent = formatDuration(duration);
- // Check for Autoplay
+        // Check for Autoplay
         if (document.getElementById('autoplay').checked == true) {
             document.getElementById('startstop-video').innerHTML = "Stop";
             if (document.getElementById('randomplayback').checked == true) {
@@ -330,7 +330,7 @@ document.getElementById('songinfo').addEventListener('click', function() {
     var videoid = document.getElementById('videoid');
     var videotitle = document.getElementById('videotitle');
     var videoduration = document.getElementById('videoduration');
-	var videostart = document.getElementById('videostart');
+    var videostart = document.getElementById('videostart');
     if(cb.checked == true){
         videoid.style.display = 'block';
         videotitle.style.display = 'block';
