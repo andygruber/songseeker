@@ -6,7 +6,7 @@ let playbackDuration = 30; // Default playback duration
 let qrScanner;
 let csvCache = {};
 let lastDecodedText = ""; // Store the last decoded text
-
+let currentStartTime = 0;
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -67,7 +67,8 @@ async function handleScannedLink(decodedText) {
         document.getElementById('video-id').textContent = youtubeLinkData.videoId;  
 
         console.log(youtubeLinkData.videoId);
-        player.cueVideoById(youtubeLinkData.videoId, youtubeLinkData.startTime || 0);   
+        currentStartTime = youtubeLinkData.startTime || 0;
+        player.cueVideoById(youtubeLinkData.videoId, currentStartTime);   
         
     }
     
@@ -216,6 +217,8 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 function onPlayerReady(event) {
     // Cue a video using the videoId from the QR code (example videoId used here)
     // player.cueVideoById('dQw4w9WgXcQ');
+    event.target.setVolume(100);
+    event.target.unMute();
 }
 
 // Display video information when it's cued
@@ -278,7 +281,8 @@ function playVideoAtRandomStartTime() {
     const maxEndPercentage = 0.90;
     let videoDuration = player.getDuration()
     playbackDuration = parseInt(document.getElementById('playback-duration').value, 10) || 30;
-    let endTime = startTime + playbackDuration;
+    let startTime = currentStartTime;
+    let endTime = playbackDuration;
 
     // Adjust start and end time based on video duration
     const minStartTime = Math.max(startTime, videoDuration * minStartPercentage);
