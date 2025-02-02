@@ -5,10 +5,10 @@ let playbackTimer; // hold the timer reference
 let playbackDuration = 30; // Default playback duration
 let qrScanner;
 let csvCache = {};
+let lastDecodedText = ""; // Store the last decoded text
+
 
 document.addEventListener('DOMContentLoaded', function () {
-
-    let lastDecodedText = ""; // Store the last decoded text
 
     const video = document.getElementById('qr-video');
     const resultContainer = document.getElementById("qr-reader-results");
@@ -24,51 +24,54 @@ document.addEventListener('DOMContentLoaded', function () {
         highlightCodeOutline: true,
     }
     );
-    
-    // Function to determine the type of link and act accordingly
-    async function handleScannedLink(decodedText) {
-        let youtubeURL = "";
-        if (isYoutubeLink(decodedText)) {
-            youtubeURL = decodedText;
-        } else if (isHitsterLink(decodedText)) {
-            const hitsterData = parseHitsterUrl(decodedText);
-            if (hitsterData) {
-                console.log("Hitster data:", hitsterData.id, hitsterData.lang);
-                try {
-                    const csvContent = await getCachedCsv(`/hitster-${hitsterData.lang}.csv`);
-                    const youtubeLink = lookupYoutubeLink(hitsterData.id, csvContent);
-                    if (youtubeLink) {
-                        // Handle YouTube link obtained from the CSV
-                        console.log(`YouTube Link from CSV: ${youtubeLink}`);
-                        youtubeURL = youtubeLink;
-                        // Example: player.cueVideoById(parseYoutubeLink(youtubeLink).videoId);
-                    }
-                } catch (error) {
-                  console.error("Failed to fetch CSV:", error);
-                }
-            }
-            else {
-                console.log("Invalid Hitster URL:", decodedText);
-            }
-        }
-
-        console.log(`YouTube Video URL: ${youtubeURL}`);
-
-        const youtubeLinkData = parseYoutubeLink(youtubeURL);
-        if (youtubeLinkData) {
-            qrScanner.stop(); // Stop scanning after a result is found
-            document.getElementById('qr-reader').style.display = 'none'; // Hide the scanner after successful scan
-            document.getElementById('cancelScanButton').style.display = 'none'; // Hide the cancel-button
-            lastDecodedText = ""; // Reset the last decoded text
-
-            document.getElementById('video-id').textContent = youtubeLinkData.videoId;  
-
-            console.log(youtubeLinkData.videoId);
-            player.cueVideoById(youtubeLinkData.videoId, youtubeLinkData.startTime || 0);   
-            
-        }
         
     }
+);
+
+// Function to determine the type of link and act accordingly
+async function handleScannedLink(decodedText) {
+    let youtubeURL = "";
+    if (isYoutubeLink(decodedText)) {
+        youtubeURL = decodedText;
+    } else if (isHitsterLink(decodedText)) {
+        const hitsterData = parseHitsterUrl(decodedText);
+        if (hitsterData) {
+            console.log("Hitster data:", hitsterData.id, hitsterData.lang);
+            try {
+                const csvContent = await getCachedCsv(`/hitster-${hitsterData.lang}.csv`);
+                const youtubeLink = lookupYoutubeLink(hitsterData.id, csvContent);
+                if (youtubeLink) {
+                    // Handle YouTube link obtained from the CSV
+                    console.log(`YouTube Link from CSV: ${youtubeLink}`);
+                    youtubeURL = youtubeLink;
+                    // Example: player.cueVideoById(parseYoutubeLink(youtubeLink).videoId);
+                }
+            } catch (error) {
+              console.error("Failed to fetch CSV:", error);
+            }
+        }
+        else {
+            console.log("Invalid Hitster URL:", decodedText);
+        }
+    }
+
+    console.log(`YouTube Video URL: ${youtubeURL}`);
+
+    const youtubeLinkData = parseYoutubeLink(youtubeURL);
+    if (youtubeLinkData) {
+        qrScanner.stop(); // Stop scanning after a result is found
+        document.getElementById('qr-reader').style.display = 'none'; // Hide the scanner after successful scan
+        document.getElementById('cancelScanButton').style.display = 'none'; // Hide the cancel-button
+        lastDecodedText = ""; // Reset the last decoded text
+
+        document.getElementById('video-id').textContent = youtubeLinkData.videoId;  
+
+        console.log(youtubeLinkData.videoId);
+        player.cueVideoById(youtubeLinkData.videoId, youtubeLinkData.startTime || 0);   
+        
+    }
+    
+}
 
     function isHitsterLink(url) {
         // Regular expression to match with or without "http://" or "https://"
@@ -189,7 +192,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
         return isNaN(seconds) ? null : seconds;
     }
-});
 
 // This function creates an <iframe> (and YouTube player) after the API code downloads.
 function onYouTubeIframeAPIReady() {
@@ -323,6 +325,10 @@ document.getElementById('startScanButton').addEventListener('click', function() 
     qrScanner.start().then(() => {
         qrScanner.setInversionMode('both'); // we want to scan also for Hitster QR codes which use inverted colors
     });
+});
+
+document.getElementById('debugButton').addEventListener('click', function() {
+    handleScannedLink("https://www.hitstergame.com/de-aaaa0012/237");
 });
 
 document.getElementById('songinfo').addEventListener('click', function() {
