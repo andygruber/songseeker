@@ -6,12 +6,24 @@ let playbackDuration = 30; // Default playback duration
 let qrScanner;
 let csvCache = {};
 let lastDecodedText = ""; // Store the last decoded text
+let currentStartTime = 0;
 
+// Function to detect iOS devices
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 
     const video = document.getElementById('qr-video');
     const resultContainer = document.getElementById("qr-reader-results");
+
+    // If the user is on an iOS device, uncheck and disable the autoplay checkbox
+    if (isIOS()) {
+        var autoplayCheckbox = document.getElementById('autoplay');
+        autoplayCheckbox.checked = false;
+        autoplayCheckbox.disabled = true;
+    }
 
     qrScanner = new QrScanner(video, result => {
         console.log('decoded qr code:', result);
@@ -67,7 +79,8 @@ async function handleScannedLink(decodedText) {
         document.getElementById('video-id').textContent = youtubeLinkData.videoId;  
 
         console.log(youtubeLinkData.videoId);
-        player.cueVideoById(youtubeLinkData.videoId, youtubeLinkData.startTime || 0);   
+        currentStartTime = youtubeLinkData.startTime || 0;
+        player.cueVideoById(youtubeLinkData.videoId, currentStartTime);   
         
     }
     
@@ -216,6 +229,8 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 function onPlayerReady(event) {
     // Cue a video using the videoId from the QR code (example videoId used here)
     // player.cueVideoById('dQw4w9WgXcQ');
+    event.target.setVolume(100);
+    event.target.unMute();
 }
 
 // Display video information when it's cued
@@ -227,21 +242,26 @@ function onPlayerStateChange(event) {
         document.getElementById('video-title').textContent = videoData.title;
         var duration = player.getDuration();
         document.getElementById('video-duration').textContent = formatDuration(duration);
-        // Check for Autoplay
-        if (document.getElementById('autoplay').checked == true) {
+        // We do need this on iOS devices otherwise one would need to press play twice
+        if (isIOS()) {
+            player.playVideo();
+        }
+        // Check for Autoplay, there is not autoplay on iOS
+        else if (document.getElementById('autoplay').checked == true) {
             document.getElementById('startstop-video').innerHTML = "Stop";
             if (document.getElementById('randomplayback').checked == true) {
                 playVideoAtRandomStartTime();
             }
             else {
-            player.playVideo();
+                player.playVideo();
             }
         }
     }
     else if (event.data == YT.PlayerState.PLAYING) {
         document.getElementById('startstop-video').style.background = "red";
     }
-    else if (event.data == YT.PlayerState.PAUSED | event.data == YT.PlayerState.ENDED) {
+    else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.ENDED) {
+        document.getElementById('startstop-video').innerHTML = "Play";
         document.getElementById('startstop-video').style.background = "green";
     }
     else if (event.data == YT.PlayerState.BUFFERING) {
@@ -278,10 +298,11 @@ function playVideoAtRandomStartTime() {
     const maxEndPercentage = 0.90;
     let videoDuration = player.getDuration()
     playbackDuration = parseInt(document.getElementById('playback-duration').value, 10) || 30;
-    let endTime = startTime + playbackDuration;
+    let startTime = currentStartTime;
+    let endTime = playbackDuration;
 
     // Adjust start and end time based on video duration
-    const minStartTime = Math.max(startTime, videoDuration * minStartPercentage);
+    const minStartTime = Math.max(currentStartTime, videoDuration * minStartPercentage);
     const maxEndTime = videoDuration * maxEndPercentage;
 
     // Ensure the video ends by 90% of its total duration
