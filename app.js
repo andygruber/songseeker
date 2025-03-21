@@ -66,8 +66,18 @@ async function handleScannedLink(decodedText) {
             console.log("Invalid Hitster URL:", decodedText);
         }
     } else if (isRockster(decodedText)){
-        const ytCode = url.searchParams.get("yt");
-        youtubeURL = `https://www.youtube.com/watch?v=${ytCode}`;
+        try {
+            const urlObj = new URL(decodedText); // Create URL object
+            const ytCode = urlObj.searchParams.get("yt"); // Extract 'yt' parameter
+    
+            if (ytCode) {
+                youtubeURL = `https://www.youtube.com/watch?v=${ytCode}`;
+            } else {
+                console.error("Rockster link is missing the 'yt' parameter:", decodedText);
+            }
+        } catch (error) {
+            console.error("Invalid Rockster URL:", decodedText);
+        }
     }
 
     console.log(`YouTube Video URL: ${youtubeURL}`);
