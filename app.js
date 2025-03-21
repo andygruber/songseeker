@@ -65,6 +65,9 @@ async function handleScannedLink(decodedText) {
         else {
             console.log("Invalid Hitster URL:", decodedText);
         }
+    } else if (isRockster(decodedText)){
+        const ytCode = url.searchParams.get("yt");
+        youtubeURL = `https://www.youtube.com/watch?v=${ytCode}`;
     }
 
     console.log(`YouTube Video URL: ${youtubeURL}`);
@@ -96,7 +99,9 @@ async function handleScannedLink(decodedText) {
     function isYoutubeLink(url) {
         return url.startsWith("https://www.youtube.com") || url.startsWith("https://youtu.be") || url.startsWith("https://music.youtube.com/");
     }
-
+    function isRockster(url){
+        return url.startsWith("https://rockster.brettspiel.digital")
+    }
     // Example implementation for parseHitsterUrl
     function parseHitsterUrl(url) {
         const regex = /^(?:http:\/\/|https:\/\/)?www\.hitstergame\.com\/(.+?)\/(\d+)$/;
@@ -349,7 +354,7 @@ document.getElementById('startScanButton').addEventListener('click', function() 
 });
 
 document.getElementById('debugButton').addEventListener('click', function() {
-    handleScannedLink("https://www.hitstergame.com/de-aaaa0012/237");
+    handleScannedLink("https://rockster.brettspiel.digital/?yt=1bP-fFxAMOI");
 });
 
 document.getElementById('songinfo').addEventListener('click', function() {
