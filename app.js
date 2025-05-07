@@ -364,7 +364,8 @@ document.getElementById('startScanButton').addEventListener('click', function() 
 });
 
 document.getElementById('debugButton').addEventListener('click', function() {
-    handleScannedLink("https://rockster.brettspiel.digital/?yt=1bP-fFxAMOI");
+    handleScannedLink("https://www.hitstergame.com/de-aaaa0012/237");
+    // handleScannedLink("https://rockster.brettspiel.digital/?yt=1bP-fFxAMOI");
 });
 
 document.getElementById('songinfo').addEventListener('click', function() {
