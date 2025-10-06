@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+  <head>
     <title>SongSeeker</title>
     <script type="module">
-        import QrScanner from "https://unpkg.com/qr-scanner/qr-scanner.min.js";
+      import QrScanner from "https://unpkg.com/qr-scanner/qr-scanner.min.js";
     </script>
     <link rel="stylesheet" href="style.css">
     <meta name=viewport content="width=device-width, initial-scale=1">
 
     <!-- Allow web app to be run in full-screen mode -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
     <!-- iOS icons -->
     <link rel="apple-touch-icon" sizes="180x180" href="icon-180x180.png">
     <!-- Android icons -->
@@ -25,14 +25,14 @@
 
     <link rel="manifest" href="manifest.json">
 
-</head>
+  </head>
 
-<body>
+  <body>
     <h2>SongSeeker</h2>
 
     <div id="qr-reader">
-        <button id="cancelScanButton" class="button">Cancel Scan</button>
-        <video id="qr-video"></video>
+      <button id="cancelScanButton" class="button">Cancel Scan</button>
+      <video id="qr-video"></video>
     </div>
 
     <button id="startScanButton" class="button_startscan">Start Scan</button>
@@ -41,7 +41,9 @@
 
     <div id="videoid">Video ID: <span id="video-id"></span></div>
     <div id="videotitle">Video Title: <span id="video-title"></span></div>
-    <div id="videoduration">Video Duration: <span id="video-duration"></span></div>
+    <div id="videoduration">
+      Video Duration: <span id="video-duration"></span>
+    </div>
     <div id="videostart">Start Time: <span id="video-start"></span></div>
 
     <hr />
@@ -51,50 +53,51 @@
     </div>
     <br/>
     <!-- <p id="list"></p> -->
-
-    <input type="checkbox" id="cb_settings" name="cb_settings" />
-    <label for="cb_settings">Show / Hide settings</label>
-    <div class="settings_div" id="settings_div">
-        <div class="text-block">
-            <div class="heading">Autoplay</div>
-            <div>
-                <input type="checkbox" id="autoplay" name="autoplay" />
-                <label for="autoplay">Autoplay</label>
-            </div>
+    <div id="show_hide_settings">
+      <input type="checkbox" id="cb_settings" name="cb_settings" />
+      <label for="cb_settings">Show / Hide settings</label>
+    </div>
+    <div class="settings_div hidden" id="settings_div">
+      <div class="text-block">
+        <div class="heading">Autoplay</div>
+        <div>
+          <input type="checkbox" id="autoplay" name="autoplay" />
+          <label for="autoplay">Autoplay</label>
         </div>
+      </div>
 
-        <div class="text-block">
-            <div class="heading">Random Playback</div>
-            <div>
-                <input type="checkbox" id="randomplayback" name="randomplayback" />
-                <label for="randomplayback">Random Playback</label>
-                <br />
-                <label for="playback-duration">Playback Duration (seconds): </label>
+      <div class="text-block">
+        <div class="heading">Random Playback</div>
+        <div>
+          <input type="checkbox" id="randomplayback" name="randomplayback" />
+          <label for="randomplayback">Random Playback</label>
+          <br />
+          <label for="playback-duration">Playback Duration (seconds): </label>
                 <input type="number" id="playback-duration" value="30">
-            </div>
-        </div>
-
+        </div>      
+    </div>
         
 
-        <div class="text-block">
-            <div class="heading">Debug</div>
-            <div>
-                <input type="checkbox" id="songinfo" name="songinfo" />
-                <label for="songinfo">Show song info</label>
+
+      <div class="text-block">
+        <div class="heading">Debug</div>
+        <div>
+          <input type="checkbox" id="songinfo" name="songinfo" />
+          <label for="songinfo">Show song info</label>
                 <br/>
-                <input type="checkbox" id="cookies" name="cookies" />
-                <label for="cookies">Show cookies</label>
-                <span id="cookielist"></span>
+          <input type="checkbox" id="cookies" name="cookies" />
+          <label for="cookies">Show cookies</label>
+          <span id="cookielist"></span>
                 <br/>
-                <button id="debugButton" class="button">Debug Scan</button>
-            </div>
+          <button id="debugButton" class="button">Debug Scan</button>
         </div>
+      </div>
     </div>
 
     <div id="player"></div> <!-- Load YouTube Player -->
 
     <script type="module" src="app.js?version=20250830"></script>
 
-</body>
+  </body>
 
 </html>

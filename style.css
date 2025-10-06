@@ -1,173 +1,291 @@
-/* Basic Reset */
+/* Modern Music Guessing Game Style */
+
+/* Reset & Base */
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
-    padding: 20px;
-    text-align: center;
+  font-family: "Montserrat", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: #fff;
+  min-height: 100vh;
+  text-align: center;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.container {
-    max-width: 800px;
-    margin: auto;
-    overflow: hidden;
-    padding: 0 20px;
+h2 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-top: 2.5rem;
+  margin-bottom: 1.2rem;
+  background: linear-gradient(90deg, #ff512f 0%, #dd2476 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.header {
-    text-align: center;
-    margin: 50px 0;
+a {
+  color: #ff512f;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
 }
 
-.header h1 {
-    font-size: 2.5rem;
+a:hover {
+  color: #fff;
+  text-shadow: 0 0 0.5rem #ff512f;
 }
 
-.qr-reader,
-.video-player {
-    background: #ffffff;
-    margin: 20px 0;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+hr {
+  border: none;
+  height: 0.15rem;
+  background: linear-gradient(90deg, #ff512f 0%, #dd2476 100%);
+  margin: 2rem 0;
+  border-radius: 1rem;
 }
 
-.button {
-    display: inline-block;
-    background: #0056b3;
-    color: #ffffff;
-    padding: 10px 20px;
-    margin: 10px 0;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+.button,
+.button_startscan,
+.button_startstop {
+  display: inline-block;
+  background: linear-gradient(90deg, #ff512f 0%, #dd2476 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.6rem 1.5rem;
+  margin: 0.7rem 0.5rem;
+  border: none;
+  border-radius: 1.5rem;
+  box-shadow: 0 0.25rem 1rem rgba(221, 36, 118, 0.15);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.button:hover,
+.button_startscan:hover,
+.button_startstop:hover {
+  background: linear-gradient(90deg, #dd2476 0%, #ff512f 100%);
+  transform: scale(1.07);
+}
+
+.button_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .button_startscan {
-    width: 200px;
-    height: 80px;
-    display: inline-block;
-    background: #0056b3;
-    color: #ffffff;
-    padding: 10px 5px;
-    margin: 10px 0;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+  width: 8rem;
+  height: 2.5rem;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
 }
 
 .button_startstop {
-    width: 100px;
-    height: 50px;
-    display: inline-block;
-    background: #0056b3;
-    color: #ffffff;
-    padding: 10px 5px;
-    margin: 10px 0;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
+  width: 6rem;
+  height: 2.2rem;
+  font-size: 1rem;
+  padding: 0.4rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.cancelScanButton {
-    z-index: 20;
-}
-
-.button:hover {
-    background: #004494;
-}
-
-.text-block {
-    position: relative;
-    margin-top: 12px;
-    padding: 1rem;
-    text-align: center;
-    border: 1px solid #333;
-  }
-
-.text-block .heading {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX( -50% );
-    padding: 0 0.5rem;
-    font-size: 20px;
-    line-height: 1;
-    background-color: #f4f4f4;
-}
-
-.settings_div {
-    width: 100%;
-    position: absolute;
-    bottom: 0.5rem;
-    left: 0;
-    padding: 0 0.5rem;
-    display: none;
-}
-
-@media screen and (max-width: 768px) {
-    .header h1 {
-        font-size: 2rem;
-    }
-
-    .container {
-        padding: 0 10px;
-    }
+.button_startstop::before {
+  content: "";
+  display: inline-block;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-right: 0.5rem;
+  background: url('data:image/svg+xml;utf8,<svg fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="6,4 20,12 6,20" /></svg>')
+    no-repeat center center;
+  background-size: contain;
 }
 
 #qr-reader {
-    position: absolute; /* or absolute */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1; /* Ensure it's above other content */
-    background-color: #f4f4f4;
+  position: relative;
+  width: 100%;
+  max-width: 25rem;
+  margin: 2rem auto 1.2rem auto;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 1.2rem;
+  box-shadow: 0 0.4rem 1.5rem rgba(30, 60, 114, 0.15);
+  padding: 1.2rem 0;
 }
 
 #qr-video {
-    display: inline-block;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-}
-
-#videotitle {
-    display:  none;
-}
-
-#videoduration {
-    display:  none;
-}
-#videostart {
-    display:  none;
-}
-
-#videoid {
-    display: none ;
+  width: 90%;
+  border-radius: 0.8rem;
+  box-shadow: 0 0.15rem 0.5rem rgba(30, 60, 114, 0.15);
 }
 
 #cancelScanButton {
-    position: absolute;
-    display:none;
-    background-color: #e95d5d;
-    color: black;
-    z-index: 4;
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  display: none;
+  background: linear-gradient(90deg, #e95d5d 0%, #ff512f 100%);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 1.2rem;
+  padding: 0.5rem 1.2rem;
+  z-index: 4;
+  border: none;
+  box-shadow: 0 0.15rem 0.5rem rgba(233, 93, 93, 0.15);
 }
 
-#cookielist {
-    display: none;
+#videoid,
+#videotitle,
+#videoduration,
+#videostart {
+  display: none;
+  margin: 0.6rem auto;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0.6rem;
+  padding: 0.5rem 0;
+  width: 80%;
+  color: #fff;
+}
+
+.settings_div {
+  width: 100%;
+  max-width: 32rem;
+  margin: 2rem auto 0 auto;
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 1.1rem;
+  box-shadow: 0 0.15rem 0.8rem rgba(30, 60, 114, 0.12);
+  padding: 1.5rem 0 1rem 0;
+  position: static;
+  display: none;
+  flex-direction: column;
+}
+
+.text-block {
+  position: relative;
+  margin-top: 1.1rem;
+  margin-bottom: 1.1rem;
+  padding: 1rem 0.8rem 0.8rem 0.8rem;
+  text-align: center;
+  border: 1px solid #ff512f;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0.15rem 0.5rem rgba(221, 36, 118, 0.07);
+}
+
+.text-block .heading {
+  position: absolute;
+  top: -1.1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0 0.7rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #ff512f 0%, #dd2476 100%);
+  color: #fff;
+  border-radius: 0.6rem;
+  box-shadow: 0 0.15rem 0.5rem rgba(221, 36, 118, 0.07);
+}
+
+input[type="checkbox"],
+input[type="number"] {
+  accent-color: #ff512f;
+  margin: 0 0.5rem;
+  font-size: 1.1rem;
+  border-radius: 0.4rem;
+  border: none;
+}
+
+label {
+  font-size: 1.1rem;
+  color: #fff;
+  margin: 0 0.4rem;
+}
+
+#show_hide_settings {
+  display: flex;
+  flex-direction: row;
 }
 
 #playback-duration {
-    width: 50px;
+  width: 3.5rem;
+  font-size: 1.1rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ff512f;
+  background: rgba(255, 255, 255, 0.12);
+  color: #333;
+}
+
+#cookielist {
+  display: none;
+}
+
+/* Animation for correct/incorrect guess feedback */
+
+@keyframes correct {
+  0% {
+    box-shadow: 0 0 0 0 #4caf50;
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+@keyframes incorrect {
+  0% {
+    box-shadow: 0 0 0 0 #e95d5d;
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(233, 93, 93, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(233, 93, 93, 0);
+  }
+}
+
+.correct-guess {
+  animation: correct 0.7s;
+}
+
+.incorrect-guess {
+  animation: incorrect 0.7s;
+}
+
+@media screen and (max-width: 768px) {
+  h2 {
+    font-size: 2rem;
+  }
+
+  .settings_div {
+    max-width: 98vw;
+    padding: 0.7rem 0 0.5rem 0;
+  }
+
+  .button_startscan {
+    width: 60vw;
+    height: 2rem;
+    font-size: 1rem;
+  }
+
+  .button_startstop {
+    width: 40vw;
+    height: 1.7rem;
+    font-size: 0.95rem;
+  }
+
+  #qr-reader {
+    max-width: 98vw;
+    padding: 0.6rem 0;
+  }
 }
