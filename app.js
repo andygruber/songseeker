@@ -408,6 +408,11 @@ document.getElementById('randomplayback').addEventListener('click', function() {
     listCookies();
 });
 
+document.getElementById('playback-duration').addEventListener('change', function() {
+    document.cookie = "PlaybackDuration=" + this.value + ";max-age=2592000"; //30 Tage
+    listCookies();
+});
+
 document.getElementById('autoplay').addEventListener('click', function() {
     document.cookie = "autoplayChecked=" + this.checked + ";max-age=2592000"; //30 Tage
     listCookies();
@@ -441,6 +446,9 @@ function getCookies() {
     if (getCookieValue("RandomPlaybackChecked") != "") {
         isTrueSet = (getCookieValue("RandomPlaybackChecked") === 'true');
         document.getElementById('randomplayback').checked = isTrueSet;
+    }
+    if (getCookieValue("PlaybackDuration") != "") {
+        document.getElementById('playback-duration').value = getCookieValue("PlaybackDuration");
     }
     if (getCookieValue("autoplayChecked") != "") {
         isTrueSet = (getCookieValue("autoplayChecked") === 'true');
